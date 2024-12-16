@@ -14,7 +14,7 @@ import { ref, onMounted, onUnmounted, nextTick } from "vue"
 
 const textFiled = ref("")
 const loading = ref(false)
-const fetchedData = ref<null | any[]>([])
+const fetchedData = ref<any[]>([])
 textFiled.value.trim()
 
 const db = collection(getFirestore(), "chat")
@@ -24,23 +24,19 @@ const chatContainer = ref<null | HTMLDivElement>(null)
 const user = useUserStore().getCurrentUser
 
 const sendMessage = async () => {
-  const text = textFiled.value
-  textFiled.value = ""
   if (!user) return
-  loading.value = true
+  textFiled.value = ""
   try {
     const docRef = await addDoc(db, {
       uid: user.uid,
       displayName: user.displayName ?? user.email,
       photoUrl: user.photoURL ?? "",
-      message: text,
+      message: textFiled.value,
       createdAt: serverTimestamp(),
     })
     console.log("Document written with ID: ", docRef.id)
   } catch (e) {
     console.error("Error adding document: ", e)
-  } finally {
-    loading.value = false
   }
 }
 
@@ -61,8 +57,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-50 mx-auto">
+  <div class="w-50 mx-auto flex text-center">
+    <v-progress-circular
+      v-if="fetchedData.length === 0"
+      indeterminate
+      size="50"
+      class="mb-10 mx-auto"
+      color="primary" />
     <v-card
+      v-else-if="fetchedData.length > 0"
       :elevation="10"
       class="pa-2 mb-10">
       <div
@@ -74,7 +77,8 @@ onMounted(async () => {
             v-for="(message, i) in fetchedData"
             :key="message.uid"
             :prepend-avatar="message.photoUrl"
-            :title="message.displayName">
+            :title="message.displayName"
+            class="text-start">
             {{ message.message }}
           </v-list-item>
         </v-list>

@@ -9,7 +9,7 @@ export const initFirebase = () => {
     authDomain: "vue-chat-7135d.firebaseapp.com",
     projectId: "vue-chat-7135d",
     storageBucket: "vue-chat-7135d.firebasestorage.app",
-    messagingSenderId: "107276856054",
+    messagingSenderId: import.meta.env.VITE_APP_FIREBASE_SENDER_ID,
     appId: import.meta.env.VITE_APP_FIREBASE_APP_ID,
   })
   const firebaseDb = getFirestore(firebaseApp);

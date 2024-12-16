@@ -35,6 +35,7 @@ watch(tab, () => {
 
 <template>
   <v-card
+    v-if="!store.getCurrentUser"
     elevation="20"
     width="500px"
     min-height="450"
@@ -123,6 +124,15 @@ watch(tab, () => {
       </v-tabs-window>
     </v-card-text>
   </v-card>
+  <v-sheet
+    elevation="5"
+    rounded
+    width="500px"
+    class="pa-5 mx-auto text-center text-sm-h5"
+    v-else>
+    <div class="mb-4">Logout</div>
+    <v-btn @click="store.logOut" color="red" icon="mdi-logout"/>
+  </v-sheet>
 </template>
 
 <style lang="scss"></style>
